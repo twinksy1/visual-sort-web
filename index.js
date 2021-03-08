@@ -83,6 +83,23 @@ function* selectionSort() {
     isSorting = false;
 }
 
+function* insertionSort() {
+    let key = 0;
+    for(let i=1; i<list.length; i++) {
+        checkOrder();
+        key = list[i].value; 
+        j = i - 1; 
+        while (j >= 0 && list[j].value > key) { 
+            list[j+1].value = list[j].value;
+            j = j - 1;
+            yield j;
+        } 
+        list[j+1].value = key; 
+    }
+    checkOrder();
+    isSorting = false;
+}
+
 function* bubbleSort() {
     let swapped = true;
     while(swapped) {
@@ -95,6 +112,21 @@ function* bubbleSort() {
                 yield swapped;
             }
         }
+    }
+    isSorting = false;
+}
+
+function* shuffle() {
+    for(let i=0; i<list.length; i++) {
+        list[i].color = "blue";
+    }
+    for(let i=0; i<list.length; i++) {
+        let newIdx = Math.floor(Math.random() * list.length);
+        while(newIdx == i) {
+            newIdx = Math.floor(Math.random() * list.length);
+        }
+        swap(i, newIdx);
+        yield i;
     }
     isSorting = false;
 }
@@ -112,28 +144,54 @@ function updateListAmount() {
 function main() {
     switch(option) {
         case 0:
+            isSorting = true;
+            sort = shuffle();
+            function anim() {
+                requestAnimationFrame(anim);
+                render();
+                sort.next();
+            }
+            anim();
+            break;
+        case 1:
             // Bubble sort
             isSorting = true;
             sort = bubbleSort();
             function anim() {
                 requestAnimationFrame(anim);
                 render();
-                sort.next(); // call next iteration of the bubbleSort function
+                sort.next();
             }
             anim();
             break;
-        case 1:
+        case 2:
             // Selection sort
             isSorting = true;
             sort = selectionSort();
             function anim() {
                 requestAnimationFrame(anim);
                 render();
-                sort.next(); // call next iteration of the bubbleSort function
+                sort.next();
+            }
+            anim();
+            break;
+        case 3:
+            // Selection sort
+            isSorting = true;
+            sort = insertionSort();
+            function anim() {
+                requestAnimationFrame(anim);
+                render();
+                sort.next();
             }
             anim();
             break;
     }
+}
+
+document.getElementById("shuffle").onclick = function() {
+    option = 0;
+    main();
 }
 
 setInterval(updateListAmount, 500);

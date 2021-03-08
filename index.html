@@ -7,7 +7,12 @@
     </head>
     <body>
         <nav class="navbar fixed-top navbar-light bg-light" id="title-navbar">
-            <h2 id="title">Visual Sort</h2>
+            <div class="col-8">
+                <h2 id="title">Visual Sort</h2>
+            </div>
+            <div class="col-4">
+                <button class="sort-option" id="shuffle">Shuffle</button>
+            </div>
         </nav>
 
 
@@ -18,17 +23,17 @@
             <div class="row">
                 <div class="col">
                     <div class="sort-option-container">
-                        <button class="sort-option" id="bubble-sort" onclick="option = 0; main();">Bubble</button>
+                        <button class="sort-option" id="bubble-sort" onclick="option = 1; main();">Bubble</button>
                     </div>
                 </div>
                 <div class="col">
                     <div class="sort-option-container">
-                        <button class="sort-option" id="selection-sort" onclick="option = 1; main();">Selection</button>
+                        <button class="sort-option" id="selection-sort" onclick="option = 2; main();">Selection</button>
                     </div>
                 </div>
                 <div class="col">
                     <div class="sort-option-container">
-                        <button class="sort-option" id="insertion-sort">Insertion</button>
+                        <button class="sort-option" id="insertion-sort" onclick="option = 3; main();">Insertion</button>
                     </div>
                 </div>
             </div>
