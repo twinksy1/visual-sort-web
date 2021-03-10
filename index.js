@@ -1,5 +1,16 @@
 let canvas = document.getElementById("page-canvas");
 let ctx = canvas.getContext("2d");
+
+function fitToContainer(){
+    // Make it visually fill the positioned parent
+    canvas.style.width ='100%';
+    canvas.style.height='100%';
+    // ...then set the internal size to match
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+fitToContainer();
+
 let minValue = 20;
 let maxValue = canvas.height - 100;
 let option = -1;
@@ -27,7 +38,7 @@ class Item {
 var list = [];
 
 function generateList(amount) {
-    let width = canvas.width / amount;
+    let width = document.documentElement.clientWidth / amount;
     let x = 0;
     list = [];
     for(let i=0; i<amount; i++) {
@@ -319,6 +330,11 @@ async function main() {
     if(isSorting) await checkOrder();
     isSorting = false;
 }
+
+window.addEventListener("resize", async function() {
+    let listAmount = document.getElementById("list-amount-slider").value;
+    await generateList(listAmount);
+});
 
 document.getElementById("shuffle").onclick = function() {
     option = 0;
