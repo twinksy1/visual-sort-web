@@ -16,6 +16,8 @@
 	* Merge Sort
 * Shuffle button to shuffle the order of the same list
 * Slider at the bottom that changes the size of the list
+* While sorting, unsorted elements will be red and sorted elements will be green
 
 ## Screenshot
 ![Screenshot](https://github.com/twinksy1/visual-sort-web/blob/master/Pictures/vsw.jpeg)
+![Screenshot](https://github.com/twinksy1/visual-sort-web/blob/master/Pictures/sorting.jpeg)
