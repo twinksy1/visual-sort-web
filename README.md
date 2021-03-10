@@ -7,7 +7,7 @@
 1. Double-click index.html to open on browser of your choice :)
 
 ## Features
-* Sorts
+* Available sorting algorithms:
 	* Bubble Sort
 	* Selection Sort
 	* Insertion Sort
