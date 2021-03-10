@@ -277,6 +277,7 @@ function updateListAmount() {
 }
 
 async function main() {
+    if(isSorting) return;
     switch(option) {
         case 0:
             isShuffling = true;
