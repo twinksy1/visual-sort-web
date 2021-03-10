@@ -19,7 +19,6 @@ let isShuffling = false;
 let sort = 0;
 let sleepTime = 0.75;
 
-
 class Item {
     constructor(value, width, xpos) {
         this.value = value;
@@ -332,8 +331,12 @@ async function main() {
 }
 
 window.addEventListener("resize", async function() {
-    let listAmount = document.getElementById("list-amount-slider").value;
-    await generateList(listAmount);
+    if(isSorting || isShuffling) {
+        return;
+    } else {
+        let listAmount = document.getElementById("list-amount-slider").value;
+        await generateList(listAmount);
+    }
 });
 
 document.getElementById("shuffle").onclick = function() {
