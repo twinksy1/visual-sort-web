@@ -1,0 +1,21 @@
+# Visual Sort Web Edition
+> User-friendly application that just sorts a random list of rectangles.
+
+## Launch
+1. Clone/download repository
+1. Navigate to downloaded folder
+1. Double-click index.html to open on browser of your choice :)
+
+## Features
+* Sorts
+	* Bubble Sort
+	* Selection Sort
+	* Insertion Sort
+	* Heap Sort
+	* Quick Sort
+	* Merge Sort
+* Shuffle button to shuffle the order of the same list
+* Slider at the bottom that changes the size of the list
+
+## Screenshot
+![Screenshot](https://github.com/twinksy1/visual-sort-web/blob/master/Pictures/vsw.jpeg)
