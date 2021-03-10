@@ -1,11 +1,14 @@
 let canvas = document.getElementById("page-canvas");
 let ctx = canvas.getContext("2d");
-let minValue = 10;
+let minValue = 20;
+let maxValue = canvas.height - 100;
 let option = -1;
 let isSorting = false;
 let isShuffling = false;
 let sort = 0;
 let sleepTime = 0.75;
+
+
 class Item {
     constructor(value, width, xpos) {
         this.value = value;
@@ -28,7 +31,7 @@ function generateList(amount) {
     let x = 0;
     list = [];
     for(let i=0; i<amount; i++) {
-        let value = Math.floor(Math.random() * (canvas.height-minValue)) + minValue;
+        let value = Math.floor(Math.random() * (maxValue-minValue)) + minValue;
         let item = new Item(value, width, x);
         list.push(item);
         x += width;
@@ -132,12 +135,34 @@ async function mergeSort(l, r) {
     }
 }
 
-async function heapify() {
-    
+async function heapify(i, size) {
+    let largest = i;
+    // Children
+    let l = 2 * i + 1;
+    let r = 2 * i + 2;
+
+    if(l < size && list[largest].value < list[l].value) {
+        largest = l;
+    }
+    if(r < size && list[largest].value < list[r].value) {
+        largest = r;    
+    }
+    if(largest != i) {
+        await swap(i, largest);
+        await sleep(sleepTime);
+        await heapify(largest, size);
+    }
 }
 
-async function heapSort() {
-
+async function heapSort(size=list.length) {
+    for(let i = Math.floor(size/2); i >= 0; i--) {
+        await heapify(i, size);
+    }
+    for(let i = size-1; i >= 0; i--) {
+        await swap(0, i);
+        await sleep(sleepTime);
+        await heapify(0, i);
+    }
 }
 
 async function checkIdx(idx, b1, b2) {

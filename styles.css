@@ -1,3 +1,25 @@
+#title {
+    font-family: "CopperPlate";
+    text-align: center;
+    font-weight: bold;
+}
+
+#shuffle-container {
+    align-items: center;
+    position: relative;
+}
+
+.sort-option {
+    background-color: white;
+    font-weight: bold;
+    color: black;
+    border-radius: 5px;
+}
+
+.sort-option:hover {
+    background-color: goldenrod;
+}
+
 .slider-container {
     width: 100%;
     padding-left: 10px;
