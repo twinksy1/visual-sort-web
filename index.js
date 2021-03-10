@@ -3,6 +3,7 @@ let ctx = canvas.getContext("2d");
 let minValue = 10;
 let option = -1;
 let isSorting = false;
+let isShuffling = false;
 let sort = 0;
 class Item {
     constructor(value, width, xpos) {
@@ -19,7 +20,7 @@ class Item {
         ctx.stroke();
     }
 }
-let list = [];
+var list = [];
 
 function generateList(amount) {
     let width = canvas.width / amount;
@@ -33,12 +34,9 @@ function generateList(amount) {
     }
 }
 
-function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(let i=0; i<list.length; i++) {
-        list[i].draw();
-    }
-}
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 function checkOrder() {
     for(let i=0; i<list.length; i++) {
@@ -64,26 +62,84 @@ function checkOrder() {
     }
 }
 
+async function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(isSorting) await checkOrder();
+    for(let i=0; i<list.length; i++) {
+        if(list[i] != undefined) {
+            list[i].draw();
+        }
+    }
+    requestAnimationFrame(render);
+}
+
 function swap(i,j) {
     let tmp = list[i].value;
     list[i].value = list[j].value;
     list[j].value = tmp;
 }
 
-function* selectionSort() {
+async function selectionSort() {
     for(let i=0; i<list.length; i++) {
         checkOrder();
         for(let j=i; j<list.length; j++) {
             if(list[j].value < list[i].value) {
                 swap(j, i);
-                yield j;
+                await sleep(1);
             }
         }
     }
-    isSorting = false;
 }
 
-function* insertionSort() {
+async function merge(l, m, r) {
+    let left = list.slice(l, m);
+    let right = list.slice(m, r);
+    let res = [];
+    let i = 0, j = 0;
+
+    while(i < left.length && j < right.length) {
+        if(left[i].value < right[j].value) {
+            res.push(left[i].value);
+            i++;
+        } else {
+            res.push(right[j].value);
+            j++;
+        }
+    }
+    
+    while(i < left.length) {
+        res.push(left[i].value);
+        i++;
+    }
+    while(j < right.length) {
+        res.push(right[j].value);
+        j++;
+    }
+    i = 0;
+    for(let k = l; k<r; k++) {
+        list[k].value = res[i];
+        i++;
+        await sleep(1);
+    }
+}
+async function mergeSort(l, r) {
+    if(l+1 < r) {
+        let m = Math.floor((r+l) / 2);
+        await mergeSort(l, m);
+        await mergeSort(m, r);
+        await merge(l, m, r);
+    }
+}
+
+async function heapSort() {
+
+}
+
+async function quickSort() {
+
+}
+
+async function insertionSort() {
     let key = 0;
     for(let i=1; i<list.length; i++) {
         checkOrder();
@@ -92,31 +148,28 @@ function* insertionSort() {
         while (j >= 0 && list[j].value > key) { 
             list[j+1].value = list[j].value;
             j = j - 1;
-            yield j;
+            await sleep(1);
         } 
         list[j+1].value = key; 
     }
     checkOrder();
-    isSorting = false;
 }
 
-function* bubbleSort() {
+async function bubbleSort() {
     let swapped = true;
     while(swapped) {
-        checkOrder();
         swapped = false;
         for(let i=0; i<list.length-1; i++) {
             if(list[i].value > list[i+1].value) {
                 swap(i, i+1);
                 swapped = true;
-                yield swapped;
             }
+            await sleep(1);
         }
     }
-    isSorting = false;
 }
 
-function* shuffle() {
+async function shuffle() {
     for(let i=0; i<list.length; i++) {
         list[i].color = "blue";
     }
@@ -126,13 +179,12 @@ function* shuffle() {
             newIdx = Math.floor(Math.random() * list.length);
         }
         swap(i, newIdx);
-        yield i;
+        await sleep(1);
     }
-    isSorting = false;
 }
 
 function updateListAmount() {
-    if(isSorting) return;
+    if(isSorting || isShuffling) return;
     canvas.width = document.body.clientWidth;
     let listAmount = document.getElementById("list-amount-slider").value;
     if(listAmount != list.length) {
@@ -141,57 +193,50 @@ function updateListAmount() {
     render();
 }
 
-function main() {
+async function main() {
     switch(option) {
         case 0:
-            isSorting = true;
-            sort = shuffle();
-            function anim() {
-                requestAnimationFrame(anim);
-                render();
-                sort.next();
-            }
-            anim();
+            isShuffling = true;
+            await shuffle();
+            isShuffling = false;
             break;
         case 1:
             // Bubble sort
             isSorting = true;
-            sort = bubbleSort();
-            function anim() {
-                requestAnimationFrame(anim);
-                render();
-                sort.next();
-            }
-            anim();
+            await bubbleSort();
             break;
         case 2:
             // Selection sort
             isSorting = true;
-            sort = selectionSort();
-            function anim() {
-                requestAnimationFrame(anim);
-                render();
-                sort.next();
-            }
-            anim();
+            await selectionSort();
             break;
         case 3:
             // Selection sort
             isSorting = true;
-            sort = insertionSort();
-            function anim() {
-                requestAnimationFrame(anim);
-                render();
-                sort.next();
-            }
-            anim();
+            await insertionSort();
+            break;
+        case 4:
+            // Heap sort
+            isSorting = true;
+            await heapSort();
+            break;
+        case 5:
+            // Quick sort
+            isSorting = true;
+            await quickSort();
+            break;
+        case 6:
+            // Merge sort
+            isSorting = true;
+            await mergeSort(0, list.length);
             break;
     }
+    isSorting = false;
 }
 
 document.getElementById("shuffle").onclick = function() {
     option = 0;
     main();
 }
-
+requestAnimationFrame(render);
 setInterval(updateListAmount, 500);
