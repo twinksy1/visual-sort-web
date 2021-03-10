@@ -20,6 +20,15 @@
     background-color: goldenrod;
 }
 
+#list-amount {
+    color: white;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-family: "CopperPlate";
+    font-size: 20px;
+}
+
 .slider-container {
     width: 100%;
     padding-left: 10px;

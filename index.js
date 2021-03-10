@@ -273,6 +273,7 @@ function updateListAmount() {
     if(listAmount != list.length) {
         generateList(listAmount);
     }
+    document.getElementById("list-amount").textContent = listAmount;
     render();
 }
 
