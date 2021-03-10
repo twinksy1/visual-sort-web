@@ -5,6 +5,7 @@ let option = -1;
 let isSorting = false;
 let isShuffling = false;
 let sort = 0;
+let sleepTime = 0.75;
 class Item {
     constructor(value, width, xpos) {
         this.value = value;
@@ -38,7 +39,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-function checkOrder() {
+async function checkOrder() {
     for(let i=0; i<list.length; i++) {
         if(i == list.length - 1) {
             if(list[i].value >= list[i-1].value) {
@@ -85,7 +86,7 @@ async function selectionSort() {
         for(let j=i; j<list.length; j++) {
             if(list[j].value < list[i].value) {
                 swap(j, i);
-                await sleep(1);
+                await sleep(sleepTime);
             }
         }
     }
@@ -119,7 +120,7 @@ async function merge(l, m, r) {
     for(let k = l; k<r; k++) {
         list[k].value = res[i];
         i++;
-        await sleep(1);
+        await sleep(sleepTime);
     }
 }
 async function mergeSort(l, r) {
@@ -131,40 +132,97 @@ async function mergeSort(l, r) {
     }
 }
 
+async function heapify() {
+    
+}
+
 async function heapSort() {
 
 }
 
-async function quickSort() {
-
+async function checkIdx(idx, b1, b2) {
+    if(idx >= b1 && idx <= b2) return true;
+    else if(idx <= b1 && idx >= b2) return true;
+    else return false;
 }
 
-async function insertionSort() {
+async function choosePivot(low, high) {
+    // Return a suitable pivot for quick sort
+    let mid = Math.floor((high + low) / 2);
+    if(await checkIdx(list[mid].value, list[low].value, list[high].value)) {
+        return mid;
+    } else if(await checkIdx(list[low].value, list[mid].value, list[high].value)) {
+        return low;
+    } else {
+        return high;
+    }
+}
+
+async function partition(low, high) {
+    let pivot = await choosePivot(low, high);
+    let i = low == pivot ? low+1 : low;
+    let j = high == pivot ? high-1 : high;
+    let lowBound = false;
+    let highBound = false;
+    while(i < j) {
+        if(list[i].value > list[pivot].value) {
+            if(highBound) {
+                await swap(i, j);
+                await sleep(sleepTime);
+            }
+            else lowBound = true;
+        } else {
+            i++;
+            lowBound = false;
+        }
+        if(list[j].value < list[pivot].value) {
+            if(lowBound) {
+                await swap(i, j);
+                await sleep(sleepTime);
+            }
+            else highBound = true;
+        } else {
+            highBound = false;
+            j--;
+        }
+    }
+    swap(i, pivot);
+    return pivot;
+}
+
+async function quickSort(low=0, high=list.length-1) {
+    if(low+2 < high) {
+        let pi = await partition(low, high);
+        await quickSort(low, pi);
+        await quickSort(pi+1, high);
+    }
+    await insertionSort(low, high+1);
+}
+
+async function insertionSort(l=0, u=list.length) {
     let key = 0;
-    for(let i=1; i<list.length; i++) {
-        checkOrder();
+    for(let i=l+1; i<u; i++) {
         key = list[i].value; 
         j = i - 1; 
-        while (j >= 0 && list[j].value > key) { 
+        while (j >= l && list[j].value > key) { 
             list[j+1].value = list[j].value;
             j = j - 1;
-            await sleep(1);
+            await sleep(sleepTime);
         } 
         list[j+1].value = key; 
     }
-    checkOrder();
 }
 
-async function bubbleSort() {
+async function bubbleSort(l=0, u=list.length) {
     let swapped = true;
     while(swapped) {
         swapped = false;
-        for(let i=0; i<list.length-1; i++) {
+        for(let i=l; i<u-1; i++) {
             if(list[i].value > list[i+1].value) {
-                swap(i, i+1);
+                await swap(i, i+1);
                 swapped = true;
             }
-            await sleep(1);
+            await sleep(sleepTime);
         }
     }
 }
@@ -179,7 +237,7 @@ async function shuffle() {
             newIdx = Math.floor(Math.random() * list.length);
         }
         swap(i, newIdx);
-        await sleep(1);
+        await sleep(sleepTime);
     }
 }
 
@@ -231,6 +289,7 @@ async function main() {
             await mergeSort(0, list.length);
             break;
     }
+    if(isSorting) await checkOrder();
     isSorting = false;
 }
 
