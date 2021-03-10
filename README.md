@@ -1,5 +1,5 @@
 # Visual Sort Web Edition
-> User-friendly application that just sorts a random list of rectangles.
+> User-friendly application that just sorts a random list of rectangles. Try it out [here](https://cs.csub.edu/~jvillasenorr/visual-sort-web/).
 
 ## Launch
 1. Clone/download repository
